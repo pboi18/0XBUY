@@ -1,7 +1,11 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState} from "react"
 import Link from "next/link"
+import { auth, provider, signInWithPopup } from "../app/firebase";
+import { FaSignOutAlt } from "react-icons/fa"; // Import a sign-out icon (e.g., from react-icons)
+
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import Image from "next/image"
 import {
   Search,
@@ -30,6 +34,10 @@ import TestimonialCarousel from "./components/testimonial-carousel"
 import { ThemeToggle } from "./components/theme-toggle"
 
 export default function LandingPage() {
+
+  const [user, setUser] = useState(null);
+
+
   useEffect(() => {
     // Handle smooth scrolling for anchor links
     const handleAnchorClick = (e) => {
@@ -54,6 +62,42 @@ export default function LandingPage() {
       document.removeEventListener("click", handleAnchorClick)
     }
   }, [])
+
+  
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      setUser(user);
+      console.log("User signed in:", user);
+    } catch (error) {
+      console.error("Error signing in with Google:", error.message);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      setUser(null);
+      console.log("User signed out");
+    } catch (error) {
+      console.error("Error signing out:", error.message);
+    }
+  };
+
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header */}
@@ -79,15 +123,27 @@ export default function LandingPage() {
           </nav>
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <Link
-              href="/login"
-              className="text-sm font-medium hover:text-primary hidden sm:inline-block transition-colors"
-            >
-              Log in
-            </Link>
-            <Button size="sm" className="transition-transform hover:scale-105">
-              Sign Up
-            </Button>
+          
+            {user ? (
+        <div className="flex items-center gap-2">
+          <span className="text-sm">{user.email}</span>
+          <Button
+            size="sm"
+            className="transition-transform hover:scale-105"
+            onClick={handleSignOut}
+          >
+            <FaSignOutAlt />
+          </Button>
+        </div>
+      ) : (
+        <Button
+          size="sm"
+          className="transition-transform hover:scale-105"
+          onClick={handleGoogleSignIn}
+        >
+          Sign In
+        </Button>
+      )}
           </div>
         </div>
       </header>
