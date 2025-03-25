@@ -4,7 +4,8 @@ import { useEffect, useState} from "react"
 import Link from "next/link"
 import { auth, provider, signInWithPopup } from "../app/firebase";
 import { FaSignOutAlt } from "react-icons/fa"; // Import a sign-out icon (e.g., from react-icons)
-
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from './firebase';
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import Image from "next/image"
 import {
@@ -36,6 +37,9 @@ import { ThemeToggle } from "./components/theme-toggle"
 export default function LandingPage() {
 
   const [user, setUser] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
 
 
   useEffect(() => {
@@ -80,8 +84,10 @@ export default function LandingPage() {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      setUser(user);
+      const idToken = await user.getIdToken();
+      console.log('Firebase ID Token:', idToken);
       console.log("User signed in:", user);
+      setUser(user);
     } catch (error) {
       console.error("Error signing in with Google:", error.message);
     }
@@ -97,6 +103,32 @@ export default function LandingPage() {
     }
   };
 
+
+  useEffect(() => {
+    // Reference to your Firestore collection
+    const productsRef = collection(db, 'products'); // Replace 'products' with your collection name
+    
+    // Set up real-time listener
+    const unsubscribe = onSnapshot(productsRef, (snapshot) => {
+      const productsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setProducts(productsData);
+      setLoading(false);
+    });
+
+    // Clean up listener on unmount
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <div className="text-center py-4">Loading products...</div>;
+  }
+
+  if (products.length === 0) {
+    return <div className="text-center py-4">No products found</div>;
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -162,15 +194,36 @@ export default function LandingPage() {
                     Buy and sell with confidence on 0XBUY. The secure, fast, and user-friendly marketplace for everyone.
                   </p>
                 </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                {/* <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button size="lg" className="gap-1 animate-pulse-subtle transition-transform hover:scale-105">
                     Get Started <ChevronRight className="h-4 w-4" />
                   </Button>
                   <Button size="lg" variant="outline" className="transition-transform hover:scale-105" asChild>
                     <Link href="/sell">Sell Now</Link>
                   </Button>
-                </div>
+                </div> */}
+       <div className="flex flex-col gap-2 min-[400px]:flex-row">
+  {/* Only show "Get Started" if user is NOT authenticated */}
+  {!user && (
+    <Button size="lg" className="gap-1 animate-pulse-subtle transition-transform hover:scale-105">
+      Get Started <ChevronRight className="h-4 w-4" />
+    </Button>
+  )}
+  
+  {/* Sell Now button with orange hover effect */}
+  <Button 
+    size="lg" 
+    variant="outline" 
+    className="transition-all hover:scale-105 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200"
+    asChild
+  >
+    <Link href={user ? "/dashboard/sell" : "/signin?redirect=/sell"}>
+      Sell Now
+    </Link>
+  </Button>
+</div>
               </div>
+
               <div className="flex items-center justify-center animate-fade-in" style={{ animationDelay: "0.2s" }}>
                 <div className="w-full max-w-md space-y-4">
                   <div className="relative">
@@ -181,30 +234,33 @@ export default function LandingPage() {
                       className="w-full bg-background pl-8 rounded-lg border shadow-sm transition-all focus:ring-2 focus:ring-primary/50"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="rounded-lg border bg-background p-4 shadow-sm transition-transform hover:scale-105">
-                      <Image
-                        src="/placeholder.svg?height=100&width=100"
-                        width={100}
-                        height={100}
-                        alt="Featured product"
-                        className="mx-auto h-24 w-24 rounded object-cover"
-                      />
-                      <h3 className="mt-2 text-sm font-medium">Trending Item</h3>
-                      <p className="text-xs text-muted-foreground">$99.99</p>
+
+                          <div className="grid grid-cols-2 gap-4">
+              {products.map((product) => (
+                <div 
+                  key={product.id}
+                  className="rounded-lg border bg-background p-4 shadow-sm transition-transform hover:scale-105"
+                >
+                  {product.image ? (
+                    <Image
+                      src={product.image}
+                      width={100}
+                      height={100}
+                      alt={product.title}
+                      className="mx-auto h-24 w-24 rounded object-cover"
+                    />
+                  ) : (
+                    <div className="mx-auto h-24 w-24 rounded bg-gray-200 flex items-center justify-center">
+                      <span className="text-xs text-gray-500">No image</span>
                     </div>
-                    <div className="rounded-lg border bg-background p-4 shadow-sm transition-transform hover:scale-105">
-                      <Image
-                        src="/placeholder.svg?height=100&width=100"
-                        width={100}
-                        height={100}
-                        alt="Featured product"
-                        className="mx-auto h-24 w-24 rounded object-cover"
-                      />
-                      <h3 className="mt-2 text-sm font-medium">Popular Item</h3>
-                      <p className="text-xs text-muted-foreground">$149.99</p>
-                    </div>
-                  </div>
+                  )}
+                  <h3 className="mt-2 text-sm font-medium truncate">{product.title}</h3>
+                  <p className="text-xs text-muted-foreground">${product.price.toFixed(2)}</p>
+                  <p className="text-xs text-muted-foreground">{product.condition}</p>
+                </div>
+              ))}
+            </div>
+
                 </div>
               </div>
             </div>
