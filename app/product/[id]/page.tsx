@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import {
   Star,
   MapPin,
@@ -16,15 +16,27 @@ import {
   Shield,
   User,
   Clock,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ThemeToggle } from "../../components/theme-toggle"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ThemeToggle } from "../../components/theme-toggle";
 
 // Sample product data
 const product = {
@@ -84,19 +96,23 @@ const product = {
         "Excellent condition as promised. Seller was very knowledgeable and answered all my questions. Would buy from again!",
     },
   ],
-}
+};
 
-export default function ProductPage({ params }: { params: { id: string } }) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [isFavorite, setIsFavorite] = useState(false)
+export default function ProductPage() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev === product.images.length - 1 ? 0 : prev + 1))
-  }
+    setCurrentImageIndex((prev) =>
+      prev === product.images.length - 1 ? 0 : prev + 1
+    );
+  };
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev === 0 ? product.images.length - 1 : prev - 1))
-  }
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? product.images.length - 1 : prev - 1
+    );
+  };
 
   return (
     <div className="container py-8 animate-fade-in">
@@ -145,7 +161,9 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               <button
                 key={index}
                 className={`relative w-20 h-20 rounded-md overflow-hidden border-2 transition-all ${
-                  index === currentImageIndex ? "border-primary" : "border-transparent hover:border-primary/50"
+                  index === currentImageIndex
+                    ? "border-primary"
+                    : "border-transparent hover:border-primary/50"
                 }`}
                 onClick={() => setCurrentImageIndex(index)}
               >
@@ -167,9 +185,13 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             <div className="flex items-center mt-2">
               <div className="flex items-center">
                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span className="ml-1 font-medium">{product.seller.rating}</span>
+                <span className="ml-1 font-medium">
+                  {product.seller.rating}
+                </span>
                 <span className="mx-1 text-muted-foreground">•</span>
-                <span className="text-muted-foreground">{product.seller.sales} sales</span>
+                <span className="text-muted-foreground">
+                  {product.seller.sales} sales
+                </span>
               </div>
               <div className="flex items-center ml-4 text-muted-foreground">
                 <MapPin className="h-4 w-4 mr-1" />
@@ -190,12 +212,20 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 variant="outline"
                 size="icon"
                 onClick={() => setIsFavorite(!isFavorite)}
-                className={`transition-colors ${isFavorite ? "text-red-500 hover:text-red-600" : ""}`}
+                className={`transition-colors ${
+                  isFavorite ? "text-red-500 hover:text-red-600" : ""
+                }`}
               >
-                <Heart className={`h-5 w-5 ${isFavorite ? "fill-red-500" : ""}`} />
+                <Heart
+                  className={`h-5 w-5 ${isFavorite ? "fill-red-500" : ""}`}
+                />
                 <span className="sr-only">Add to favorites</span>
               </Button>
-              <Button variant="outline" size="icon" className="transition-colors">
+              <Button
+                variant="outline"
+                size="icon"
+                className="transition-colors"
+              >
                 <Share2 className="h-5 w-5" />
                 <span className="sr-only">Share</span>
               </Button>
@@ -223,7 +253,9 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 <SheetContent>
                   <SheetHeader>
                     <SheetTitle>Order Delivery</SheetTitle>
-                    <SheetDescription>Complete your purchase with delivery</SheetDescription>
+                    <SheetDescription>
+                      Complete your purchase with delivery
+                    </SheetDescription>
                   </SheetHeader>
                   <div className="py-4">
                     <div className="rounded-lg border p-4 mb-4">
@@ -238,14 +270,18 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                         </div>
                         <div>
                           <h3 className="font-medium">{product.title}</h3>
-                          <p className="text-lg font-bold">${product.price.toFixed(2)}</p>
+                          <p className="text-lg font-bold">
+                            ${product.price.toFixed(2)}
+                          </p>
                         </div>
                       </div>
                     </div>
 
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <h3 className="text-sm font-medium">Delivery Options</h3>
+                        <h3 className="text-sm font-medium">
+                          Delivery Options
+                        </h3>
                         <div className="space-y-2">
                           <div className="flex items-center space-x-2">
                             <input
@@ -255,7 +291,10 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                               defaultChecked
                               className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
                             />
-                            <label htmlFor="standard" className="flex justify-between w-full">
+                            <label
+                              htmlFor="standard"
+                              className="flex justify-between w-full"
+                            >
                               <span>Standard Shipping (3-5 days)</span>
                               <span className="font-medium">$8.99</span>
                             </label>
@@ -267,7 +306,10 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                               name="delivery"
                               className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
                             />
-                            <label htmlFor="express" className="flex justify-between w-full">
+                            <label
+                              htmlFor="express"
+                              className="flex justify-between w-full"
+                            >
                               <span>Express Shipping (1-2 days)</span>
                               <span className="font-medium">$14.99</span>
                             </label>
@@ -295,12 +337,21 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                           <Separator className="my-2" />
                           <div className="flex justify-between font-bold">
                             <span>Total</span>
-                            <span>${(product.price + 8.99 + product.price * 0.08).toFixed(2)}</span>
+                            <span>
+                              $
+                              {(
+                                product.price +
+                                8.99 +
+                                product.price * 0.08
+                              ).toFixed(2)}
+                            </span>
                           </div>
                         </div>
                       </div>
 
-                      <Button className="w-full mt-4 transition-transform hover:scale-105">Proceed to Checkout</Button>
+                      <Button className="w-full mt-4 transition-transform hover:scale-105">
+                        Proceed to Checkout
+                      </Button>
                     </div>
                   </div>
                 </SheetContent>
@@ -324,7 +375,10 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           <div className="rounded-lg border p-4">
             <div className="flex items-center gap-3">
               <Avatar>
-                <AvatarImage src={product.seller.avatar} alt={product.seller.name} />
+                <AvatarImage
+                  src={product.seller.avatar}
+                  alt={product.seller.name}
+                />
                 <AvatarFallback>{product.seller.name.charAt(0)}</AvatarFallback>
               </Avatar>
               <div>
@@ -336,7 +390,9 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               </div>
               <div className="ml-auto flex items-center">
                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span className="ml-1 font-medium">{product.seller.rating}</span>
+                <span className="ml-1 font-medium">
+                  {product.seller.rating}
+                </span>
               </div>
             </div>
             <div className="mt-3 text-sm text-muted-foreground flex items-center">
@@ -389,21 +445,27 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                   <div className="flex justify-between items-center p-2 border-b">
                     <div>
                       <p className="font-medium">Standard Shipping</p>
-                      <p className="text-sm text-muted-foreground">3-5 business days</p>
+                      <p className="text-sm text-muted-foreground">
+                        3-5 business days
+                      </p>
                     </div>
                     <p className="font-medium">$8.99</p>
                   </div>
                   <div className="flex justify-between items-center p-2 border-b">
                     <div>
                       <p className="font-medium">Express Shipping</p>
-                      <p className="text-sm text-muted-foreground">1-2 business days</p>
+                      <p className="text-sm text-muted-foreground">
+                        1-2 business days
+                      </p>
                     </div>
                     <p className="font-medium">$14.99</p>
                   </div>
                   <div className="flex justify-between items-center p-2">
                     <div>
                       <p className="font-medium">Local Pickup</p>
-                      <p className="text-sm text-muted-foreground">Brooklyn, NY</p>
+                      <p className="text-sm text-muted-foreground">
+                        Brooklyn, NY
+                      </p>
                     </div>
                     <p className="font-medium">Free</p>
                   </div>
@@ -417,8 +479,9 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                     <AccordionTrigger>Returns & Refunds</AccordionTrigger>
                     <AccordionContent>
                       <p className="text-sm text-muted-foreground">
-                        This seller accepts returns within 7 days of delivery. Buyer is responsible for return shipping
-                        costs unless the item was misrepresented.
+                        This seller accepts returns within 7 days of delivery.
+                        Buyer is responsible for return shipping costs unless
+                        the item was misrepresented.
                       </p>
                     </AccordionContent>
                   </AccordionItem>
@@ -426,7 +489,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                     <AccordionTrigger>International Shipping</AccordionTrigger>
                     <AccordionContent>
                       <p className="text-sm text-muted-foreground">
-                        This seller ships internationally. Additional shipping costs and import duties may apply.
+                        This seller ships internationally. Additional shipping
+                        costs and import duties may apply.
                       </p>
                     </AccordionContent>
                   </AccordionItem>
@@ -434,8 +498,9 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                     <AccordionTrigger>Shipping Insurance</AccordionTrigger>
                     <AccordionContent>
                       <p className="text-sm text-muted-foreground">
-                        All items are shipped with insurance. In case of damage during transit, please contact the
-                        seller immediately with photos of the damaged item and packaging.
+                        All items are shipped with insurance. In case of damage
+                        during transit, please contact the seller immediately
+                        with photos of the damaged item and packaging.
                       </p>
                     </AccordionContent>
                   </AccordionItem>
@@ -453,14 +518,25 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                     .map((_, i) => (
                       <Star
                         key={i}
-                        className={`h-5 w-5 ${i < Math.round(product.seller.rating) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`}
+                        className={`h-5 w-5 ${
+                          i < Math.round(product.seller.rating)
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-muted-foreground"
+                        }`}
                       />
                     ))}
                 </div>
-                <span className="font-medium text-lg">{product.seller.rating} out of 5</span>
-                <span className="text-muted-foreground">({product.reviews.length} reviews)</span>
+                <span className="font-medium text-lg">
+                  {product.seller.rating} out of 5
+                </span>
+                <span className="text-muted-foreground">
+                  ({product.reviews.length} reviews)
+                </span>
               </div>
-              <Button variant="outline" className="gap-2 transition-all hover:bg-primary hover:text-primary-foreground">
+              <Button
+                variant="outline"
+                className="gap-2 transition-all hover:bg-primary hover:text-primary-foreground"
+              >
                 Write a Review
               </Button>
             </div>
@@ -485,7 +561,11 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                         .map((_, i) => (
                           <Star
                             key={i}
-                            className={`h-4 w-4 ${i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`}
+                            className={`h-4 w-4 ${
+                              i < review.rating
+                                ? "fill-yellow-400 text-yellow-400"
+                                : "text-muted-foreground"
+                            }`}
                           />
                         ))}
                     </div>
@@ -517,7 +597,9 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                   <h3 className="font-medium line-clamp-1 group-hover:text-primary transition-colors">
                     Vintage Film Camera
                   </h3>
-                  <p className="font-bold mt-1">${(Math.random() * 200 + 50).toFixed(2)}</p>
+                  <p className="font-bold mt-1">
+                    ${(Math.random() * 200 + 50).toFixed(2)}
+                  </p>
                 </div>
               </div>
             </Link>
@@ -525,6 +607,5 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

@@ -1,82 +1,106 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { ChevronLeft, Upload, X, Info, MapPin, Truck, DollarSign, Tag } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Separator } from "@/components/ui/separator"
-import { Card, CardContent } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { ThemeToggle } from "../components/theme-toggle"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import {
+  ChevronLeft,
+  Upload,
+  X,
+  Info,
+  MapPin,
+  Truck,
+  DollarSign,
+  Tag,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Separator } from "@/components/ui/separator";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { ThemeToggle } from "../components/theme-toggle";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function SellPage() {
-  const router = useRouter()
-  const [images, setImages] = useState<string[]>([])
-  const [title, setTitle] = useState("")
-  const [price, setPrice] = useState("")
-  const [category, setCategory] = useState("")
-  const [condition, setCondition] = useState("")
-  const [description, setDescription] = useState("")
-  const [tags, setTags] = useState<string[]>([])
-  const [currentTag, setCurrentTag] = useState("")
-  const [shippingOption, setShippingOption] = useState("both")
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [activeTab, setActiveTab] = useState("details")
+  const router = useRouter();
+  const [images, setImages] = useState<string[]>([]);
+  const [title, setTitle] = useState("");
+  const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("");
+  const [condition, setCondition] = useState("");
+  const [description, setDescription] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [currentTag, setCurrentTag] = useState("");
+  const [shippingOption, setShippingOption] = useState("both");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState("details");
 
   // Mock function to add a placeholder image
   const handleAddImage = () => {
     if (images.length < 5) {
-      setImages([...images, `/placeholder.svg?height=400&width=400&text=Image+${images.length + 1}`])
+      setImages([
+        ...images,
+        `/placeholder.svg?height=400&width=400&text=Image+${images.length + 1}`,
+      ]);
     }
-  }
+  };
 
   const handleRemoveImage = (index: number) => {
-    setImages(images.filter((_, i) => i !== index))
-  }
+    setImages(images.filter((_, i) => i !== index));
+  };
 
   const handleAddTag = () => {
     if (currentTag && !tags.includes(currentTag) && tags.length < 5) {
-      setTags([...tags, currentTag])
-      setCurrentTag("")
+      setTags([...tags, currentTag]);
+      setCurrentTag("");
     }
-  }
+  };
 
   const handleRemoveTag = (tag: string) => {
-    setTags(tags.filter((t) => t !== tag))
-  }
+    setTags(tags.filter((t) => t !== tag));
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && currentTag) {
-      e.preventDefault()
-      handleAddTag()
+      e.preventDefault();
+      handleAddTag();
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
     // Simulate API call
     setTimeout(() => {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
       // Redirect to seller dashboard after successful submission
-      router.push("/seller/dashboard")
-    }, 1500)
-  }
+      router.push("/seller/dashboard");
+    }, 1500);
+  };
 
-  const isFormValid = title && price && category && condition && description && images.length > 0
+  const isFormValid =
+    title && price && category && condition && description && images.length > 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -102,10 +126,16 @@ export default function SellPage() {
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold">List Your Item</h1>
-            <p className="text-muted-foreground mt-2">Fill out the details below to create your listing on 0XBUY</p>
+            <p className="text-muted-foreground mt-2">
+              Fill out the details below to create your listing on 0XBUY
+            </p>
           </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-3 mb-8">
               <TabsTrigger value="details" className="transition-all">
                 Product Details
@@ -113,7 +143,11 @@ export default function SellPage() {
               <TabsTrigger value="images" className="transition-all">
                 Images & Media
               </TabsTrigger>
-              <TabsTrigger value="preview" className="transition-all" disabled={!isFormValid}>
+              <TabsTrigger
+                value="preview"
+                className="transition-all"
+                disabled={!isFormValid}
+              >
                 Preview & Submit
               </TabsTrigger>
             </TabsList>
@@ -135,7 +169,8 @@ export default function SellPage() {
                       required
                     />
                     <p className="text-xs text-muted-foreground">
-                      A clear, detailed title helps buyers find your item (max 80 characters)
+                      A clear, detailed title helps buyers find your item (max
+                      80 characters)
                     </p>
                   </div>
 
@@ -163,8 +198,15 @@ export default function SellPage() {
                     <Label htmlFor="category">
                       Category <span className="text-destructive">*</span>
                     </Label>
-                    <Select value={category} onValueChange={setCategory} required>
-                      <SelectTrigger id="category" className="transition-all hover:border-primary">
+                    <Select
+                      value={category}
+                      onValueChange={setCategory}
+                      required
+                    >
+                      <SelectTrigger
+                        id="category"
+                        className="transition-all hover:border-primary"
+                      >
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -174,7 +216,9 @@ export default function SellPage() {
                         <SelectItem value="beauty">Beauty</SelectItem>
                         <SelectItem value="books">Books</SelectItem>
                         <SelectItem value="automotive">Automotive</SelectItem>
-                        <SelectItem value="collectibles">Collectibles</SelectItem>
+                        <SelectItem value="collectibles">
+                          Collectibles
+                        </SelectItem>
                         <SelectItem value="other">Other</SelectItem>
                       </SelectContent>
                     </Select>
@@ -184,14 +228,25 @@ export default function SellPage() {
                     <Label htmlFor="condition">
                       Condition <span className="text-destructive">*</span>
                     </Label>
-                    <Select value={condition} onValueChange={setCondition} required>
-                      <SelectTrigger id="condition" className="transition-all hover:border-primary">
+                    <Select
+                      value={condition}
+                      onValueChange={setCondition}
+                      required
+                    >
+                      <SelectTrigger
+                        id="condition"
+                        className="transition-all hover:border-primary"
+                      >
                         <SelectValue placeholder="Select condition" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="new">New</SelectItem>
-                        <SelectItem value="like-new">Used - Like New</SelectItem>
-                        <SelectItem value="excellent">Used - Excellent</SelectItem>
+                        <SelectItem value="like-new">
+                          Used - Like New
+                        </SelectItem>
+                        <SelectItem value="excellent">
+                          Used - Excellent
+                        </SelectItem>
                         <SelectItem value="good">Used - Good</SelectItem>
                         <SelectItem value="fair">Used - Fair</SelectItem>
                       </SelectContent>
@@ -211,14 +266,17 @@ export default function SellPage() {
                       required
                     />
                     <p className="text-xs text-muted-foreground">
-                      Include details about features, specifications, dimensions, condition, and any flaws or defects
+                      Include details about features, specifications,
+                      dimensions, condition, and any flaws or defects
                     </p>
                   </div>
 
                   <div className="space-y-2 md:col-span-2">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="tags">Tags (Optional)</Label>
-                      <span className="text-xs text-muted-foreground">{tags.length}/5</span>
+                      <span className="text-xs text-muted-foreground">
+                        {tags.length}/5
+                      </span>
                     </div>
                     <div className="flex gap-2">
                       <div className="relative flex-1">
@@ -245,14 +303,23 @@ export default function SellPage() {
                     {tags.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {tags.map((tag) => (
-                          <Badge key={tag} variant="secondary" className="flex items-center gap-1 px-3 py-1">
+                          <Badge
+                            key={tag}
+                            variant="secondary"
+                            className="flex items-center gap-1 px-3 py-1"
+                          >
                             {tag}
-                            <X className="h-3 w-3 ml-1 cursor-pointer" onClick={() => handleRemoveTag(tag)} />
+                            <X
+                              className="h-3 w-3 ml-1 cursor-pointer"
+                              onClick={() => handleRemoveTag(tag)}
+                            />
                           </Badge>
                         ))}
                       </div>
                     )}
-                    <p className="text-xs text-muted-foreground">Add relevant keywords to help buyers find your item</p>
+                    <p className="text-xs text-muted-foreground">
+                      Add relevant keywords to help buyers find your item
+                    </p>
                   </div>
 
                   <div className="space-y-2">
@@ -269,7 +336,10 @@ export default function SellPage() {
 
                   <div className="space-y-2">
                     <Label>Shipping Options</Label>
-                    <RadioGroup defaultValue={shippingOption} onValueChange={setShippingOption}>
+                    <RadioGroup
+                      defaultValue={shippingOption}
+                      onValueChange={setShippingOption}
+                    >
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="shipping" id="shipping" />
                         <Label htmlFor="shipping">Shipping Only</Label>
@@ -290,7 +360,13 @@ export default function SellPage() {
                       type="button"
                       onClick={() => setActiveTab("images")}
                       className="w-full transition-transform hover:scale-105"
-                      disabled={!title || !price || !category || !condition || !description}
+                      disabled={
+                        !title ||
+                        !price ||
+                        !category ||
+                        !condition ||
+                        !description
+                      }
                     >
                       Continue to Images
                     </Button>
@@ -303,31 +379,43 @@ export default function SellPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold">Product Images</h2>
-                    <span className="text-sm text-muted-foreground">{images.length}/5 images</span>
+                    <span className="text-sm text-muted-foreground">
+                      {images.length}/5 images
+                    </span>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <div
                         onClick={handleAddImage}
-                        className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:bg-muted/50 transition-colors ${images.length >= 5 ? "opacity-50 cursor-not-allowed" : ""}`}
+                        className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:bg-muted/50 transition-colors ${
+                          images.length >= 5
+                            ? "opacity-50 cursor-not-allowed"
+                            : ""
+                        }`}
                       >
                         <div className="flex flex-col items-center gap-2">
                           <Upload className="h-8 w-8 text-muted-foreground" />
                           <p className="font-medium">Upload Images</p>
-                          <p className="text-sm text-muted-foreground">Drag & drop or click to browse</p>
-                          <p className="text-xs text-muted-foreground">(Max 5 images, 5MB each)</p>
+                          <p className="text-sm text-muted-foreground">
+                            Drag & drop or click to browse
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            (Max 5 images, 5MB each)
+                          </p>
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <p className="text-sm font-medium">Tips for great product photos:</p>
+                        <p className="text-sm font-medium">
+                          Tips for great product photos:
+                        </p>
                         <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
                           <li>Use good lighting to show your item clearly</li>
                           <li>Take photos from multiple angles</li>
                           <li>Include close-ups of any details or flaws</li>
                           <li>Use a neutral background</li>
-                          <li>Show the item's size/scale if relevant</li>
+                          <li>Show the item&apos;s size/scale if relevant</li>
                         </ul>
                       </div>
                     </div>
@@ -352,7 +440,11 @@ export default function SellPage() {
                               >
                                 <X className="h-4 w-4" />
                               </button>
-                              {index === 0 && <Badge className="absolute bottom-2 left-2">Main Image</Badge>}
+                              {index === 0 && (
+                                <Badge className="absolute bottom-2 left-2">
+                                  Main Image
+                                </Badge>
+                              )}
                             </div>
                           ))}
                         </div>
@@ -393,7 +485,9 @@ export default function SellPage() {
               <TabsContent value="preview" className="space-y-6">
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold">Preview Your Listing</h2>
+                    <h2 className="text-xl font-semibold">
+                      Preview Your Listing
+                    </h2>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -420,38 +514,58 @@ export default function SellPage() {
                         />
                       ) : (
                         <div className="flex items-center justify-center h-full">
-                          <p className="text-muted-foreground">No image available</p>
+                          <p className="text-muted-foreground">
+                            No image available
+                          </p>
                         </div>
                       )}
                     </div>
                     <CardContent className="p-6">
                       <div className="space-y-4">
                         <div>
-                          <h3 className="text-2xl font-bold">{title || "Product Title"}</h3>
+                          <h3 className="text-2xl font-bold">
+                            {title || "Product Title"}
+                          </h3>
                           <p className="text-2xl font-bold text-primary mt-2">
                             ${Number.parseFloat(price || "0").toFixed(2)}
                           </p>
                         </div>
 
                         <div className="flex flex-wrap gap-2">
-                          {condition && <Badge variant="outline">{condition.replace("-", " ")}</Badge>}
+                          {condition && (
+                            <Badge variant="outline">
+                              {condition.replace("-", " ")}
+                            </Badge>
+                          )}
                           {category && (
-                            <Badge variant="outline">{category.charAt(0).toUpperCase() + category.slice(1)}</Badge>
+                            <Badge variant="outline">
+                              {category.charAt(0).toUpperCase() +
+                                category.slice(1)}
+                            </Badge>
                           )}
                           {shippingOption === "shipping" && (
-                            <Badge variant="outline" className="flex items-center gap-1">
+                            <Badge
+                              variant="outline"
+                              className="flex items-center gap-1"
+                            >
                               <Truck className="h-3 w-3" />
                               Shipping
                             </Badge>
                           )}
                           {shippingOption === "local" && (
-                            <Badge variant="outline" className="flex items-center gap-1">
+                            <Badge
+                              variant="outline"
+                              className="flex items-center gap-1"
+                            >
                               <MapPin className="h-3 w-3" />
                               Local Pickup
                             </Badge>
                           )}
                           {shippingOption === "both" && (
-                            <Badge variant="outline" className="flex items-center gap-1">
+                            <Badge
+                              variant="outline"
+                              className="flex items-center gap-1"
+                            >
                               <Truck className="h-3 w-3" />
                               Shipping & Pickup
                             </Badge>
@@ -507,7 +621,11 @@ export default function SellPage() {
                       >
                         Back to Images
                       </Button>
-                      <Button type="submit" className="transition-transform hover:scale-105" disabled={isSubmitting}>
+                      <Button
+                        type="submit"
+                        className="transition-transform hover:scale-105"
+                        disabled={isSubmitting}
+                      >
                         {isSubmitting ? (
                           <>
                             <svg
@@ -545,6 +663,5 @@ export default function SellPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }
-

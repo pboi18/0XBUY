@@ -1,16 +1,31 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef, useEffect } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Send, ChevronLeft, Paperclip, ImageIcon, MapPin, DollarSign, Calendar } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { ThemeToggle } from "../../components/theme-toggle"
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  Send,
+  ChevronLeft,
+  Paperclip,
+  ImageIcon,
+  MapPin,
+  DollarSign,
+  Calendar,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { ThemeToggle } from "../../components/theme-toggle";
 
 // Sample chat data
 const chatData = {
@@ -77,60 +92,68 @@ const chatData = {
       timestamp: "2023-03-15T10:55:00",
     },
   ],
-}
+};
 
-export default function ChatPage({ params }: { params: { id: string } }) {
-  const [message, setMessage] = useState("")
-  const [messages, setMessages] = useState(chatData.messages)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+export default function ChatPage() {
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState(chatData.messages);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const formatTimestamp = (timestamp: string) => {
-    const date = new Date(timestamp)
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-  }
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
 
   const handleSendMessage = () => {
-    if (message.trim() === "") return
+    if (message.trim() === "") return;
 
     const newMessage = {
       id: messages.length + 1,
       sender: "user",
       text: message,
       timestamp: new Date().toISOString(),
-    }
+    };
 
-    setMessages([...messages, newMessage])
-    setMessage("")
-  }
+    setMessages([...messages, newMessage]);
+    setMessage("");
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
+      e.preventDefault();
+      handleSendMessage();
     }
-  }
+  };
 
   // Scroll to bottom when messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <div className="flex flex-col h-screen animate-fade-in">
       {/* Chat Header */}
       <header className="border-b p-4">
         <div className="container flex items-center gap-4">
-          <Link href="/search" className="text-muted-foreground hover:text-primary transition-colors">
+          <Link
+            href="/search"
+            className="text-muted-foreground hover:text-primary transition-colors"
+          >
             <ChevronLeft className="h-5 w-5" />
           </Link>
           <div className="flex items-center gap-3">
             <Avatar>
-              <AvatarImage src={chatData.seller.avatar} alt={chatData.seller.name} />
+              <AvatarImage
+                src={chatData.seller.avatar}
+                alt={chatData.seller.name}
+              />
               <AvatarFallback>{chatData.seller.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div>
               <h2 className="font-medium">{chatData.seller.name}</h2>
-              <p className="text-xs text-muted-foreground">{chatData.seller.responseTime}</p>
+              <p className="text-xs text-muted-foreground">
+                {chatData.seller.responseTime}
+              </p>
             </div>
           </div>
           <div className="ml-auto flex items-center gap-2">
@@ -148,7 +171,9 @@ export default function ChatPage({ params }: { params: { id: string } }) {
               <SheetContent>
                 <SheetHeader>
                   <SheetTitle>Item Details</SheetTitle>
-                  <SheetDescription>You're discussing this item</SheetDescription>
+                  <SheetDescription>
+                    You&apos;re discussing this item
+                  </SheetDescription>
                 </SheetHeader>
                 <div className="py-4">
                   <div className="rounded-lg border overflow-hidden">
@@ -162,7 +187,9 @@ export default function ChatPage({ params }: { params: { id: string } }) {
                     </div>
                     <div className="p-4">
                       <h3 className="font-medium">{chatData.product.title}</h3>
-                      <p className="text-xl font-bold mt-2">${chatData.product.price.toFixed(2)}</p>
+                      <p className="text-xl font-bold mt-2">
+                        ${chatData.product.price.toFixed(2)}
+                      </p>
                       <div className="mt-4 space-y-2">
                         <Button
                           variant="outline"
@@ -190,7 +217,10 @@ export default function ChatPage({ params }: { params: { id: string } }) {
         <div className="rounded-lg border p-3 bg-muted/50 text-center text-sm text-muted-foreground mx-auto max-w-md">
           <p>
             You started chatting about{" "}
-            <Link href={`/product/${chatData.product.id}`} className="font-medium text-primary hover:underline">
+            <Link
+              href={`/product/${chatData.product.id}`}
+              className="font-medium text-primary hover:underline"
+            >
               {chatData.product.title}
             </Link>
           </p>
@@ -198,7 +228,12 @@ export default function ChatPage({ params }: { params: { id: string } }) {
         </div>
 
         {messages.map((msg) => (
-          <div key={msg.id} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
+          <div
+            key={msg.id}
+            className={`flex ${
+              msg.sender === "user" ? "justify-end" : "justify-start"
+            }`}
+          >
             <div
               className={`max-w-[80%] md:max-w-[60%] ${
                 msg.sender === "user"
@@ -207,7 +242,9 @@ export default function ChatPage({ params }: { params: { id: string } }) {
               } p-3 relative`}
             >
               <p>{msg.text}</p>
-              <span className="text-xs opacity-70 block text-right mt-1">{formatTimestamp(msg.timestamp)}</span>
+              <span className="text-xs opacity-70 block text-right mt-1">
+                {formatTimestamp(msg.timestamp)}
+              </span>
             </div>
           </div>
         ))}
@@ -284,6 +321,5 @@ export default function ChatPage({ params }: { params: { id: string } }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
