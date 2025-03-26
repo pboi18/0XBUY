@@ -1,47 +1,20 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import {
-  Search,
-  Filter,
-  Grid3X3,
-  List,
-  Star,
-  MapPin,
-  MessageCircle,
-  X,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Slider } from "@/components/ui/slider";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { ThemeToggle } from "../components/theme-toggle";
+import { useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { Search, Filter, Grid3X3, List, Star, MapPin, MessageCircle, X } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Slider } from "@/components/ui/slider"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+import { ThemeToggle } from "../components/theme-toggle"
 
 // Sample product data
 const products = [
@@ -54,8 +27,7 @@ const products = [
     seller: "CameraCollector",
     rating: 4.8,
     image: "/placeholder.svg?height=200&width=200",
-    description:
-      "Classic film camera from the 1970s in excellent working condition.",
+    description: "Classic film camera from the 1970s in excellent working condition.",
   },
   {
     id: 2,
@@ -66,8 +38,7 @@ const products = [
     seller: "KeyboardKing",
     rating: 4.6,
     image: "/placeholder.svg?height=200&width=200",
-    description:
-      "Mechanical keyboard with Cherry MX Blue switches. Tactile and clicky.",
+    description: "Mechanical keyboard with Cherry MX Blue switches. Tactile and clicky.",
   },
   {
     id: 3,
@@ -78,8 +49,7 @@ const products = [
     seller: "AudioPhile",
     rating: 4.9,
     image: "/placeholder.svg?height=200&width=200",
-    description:
-      "Brand new wireless headphones with active noise cancellation.",
+    description: "Brand new wireless headphones with active noise cancellation.",
   },
   {
     id: 4,
@@ -90,8 +60,7 @@ const products = [
     seller: "VintageFashion",
     rating: 4.7,
     image: "/placeholder.svg?height=200&width=200",
-    description:
-      "Genuine leather jacket from the 80s. Some wear but in good condition.",
+    description: "Genuine leather jacket from the 80s. Some wear but in good condition.",
   },
   {
     id: 5,
@@ -102,8 +71,7 @@ const products = [
     seller: "BikeEnthusiast",
     rating: 4.5,
     image: "/placeholder.svg?height=200&width=200",
-    description:
-      "21-speed mountain bike, recently serviced and in excellent condition.",
+    description: "21-speed mountain bike, recently serviced and in excellent condition.",
   },
   {
     id: 6,
@@ -114,27 +82,25 @@ const products = [
     seller: "FurnitureFinds",
     rating: 4.8,
     image: "/placeholder.svg?height=200&width=200",
-    description:
-      "Beautiful antique wooden desk with three drawers. Some patina but solid construction.",
+    description: "Beautiful antique wooden desk with three drawers. Some patina but solid construction.",
   },
-];
+]
 
 export default function SearchPage() {
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [priceRange, setPriceRange] = useState([0, 500]);
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  const [sortOption, setSortOption] = useState("relevance");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const [priceRange, setPriceRange] = useState([0, 500])
+  const [activeFilters, setActiveFilters] = useState<string[]>([])
+  const [sortOption, setSortOption] = useState("relevance")
 
   const addFilter = (filter: string) => {
     if (!activeFilters.includes(filter)) {
-      setActiveFilters([...activeFilters, filter]);
+      setActiveFilters([...activeFilters, filter])
     }
-  };
+  }
 
   const removeFilter = (filter: string) => {
-    setActiveFilters(activeFilters.filter((f) => f !== filter));
-  };
+    setActiveFilters(activeFilters.filter((f) => f !== filter))
+  }
 
   return (
     <div className="container py-8 animate-fade-in">
@@ -144,8 +110,7 @@ export default function SearchPage() {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search for products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            defaultValue="camera"
             className="pl-10 transition-all focus:ring-2 focus:ring-primary/50 w-full"
           />
         </div>
@@ -153,10 +118,7 @@ export default function SearchPage() {
           <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                className="gap-2 transition-all hover:bg-primary hover:text-primary-foreground"
-              >
+              <Button variant="outline" className="gap-2 transition-all hover:bg-primary hover:text-primary-foreground">
                 <Filter className="h-4 w-4" />
                 Filters
               </Button>
@@ -164,9 +126,7 @@ export default function SearchPage() {
             <SheetContent className="w-full sm:max-w-md overflow-y-auto">
               <SheetHeader className="mb-4">
                 <SheetTitle>Filter Results</SheetTitle>
-                <SheetDescription>
-                  Narrow down your search results
-                </SheetDescription>
+                <SheetDescription>Narrow down your search results</SheetDescription>
               </SheetHeader>
 
               <div className="space-y-6">
@@ -190,105 +150,65 @@ export default function SearchPage() {
 
                 <Separator />
 
-                <Accordion
-                  type="multiple"
-                  defaultValue={["condition", "location"]}
-                >
+                <Accordion type="multiple" defaultValue={["condition", "location"]}>
                   <AccordionItem value="condition">
-                    <AccordionTrigger className="text-sm font-medium">
-                      Condition
-                    </AccordionTrigger>
+                    <AccordionTrigger className="text-sm font-medium">Condition</AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-2">
-                        {[
-                          "New",
-                          "Used - Like New",
-                          "Used - Excellent",
-                          "Used - Good",
-                          "Used - Fair",
-                        ].map((condition) => (
-                          <div
-                            key={condition}
-                            className="flex items-center space-x-2"
-                          >
-                            <Checkbox
-                              id={`condition-${condition}`}
-                              onCheckedChange={(checked) => {
-                                if (checked)
-                                  addFilter(`Condition: ${condition}`);
-                                else removeFilter(`Condition: ${condition}`);
-                              }}
-                            />
-                            <Label htmlFor={`condition-${condition}`}>
-                              {condition}
-                            </Label>
-                          </div>
-                        ))}
+                        {["New", "Used - Like New", "Used - Excellent", "Used - Good", "Used - Fair"].map(
+                          (condition) => (
+                            <div key={condition} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`condition-${condition}`}
+                                onCheckedChange={(checked) => {
+                                  if (checked) addFilter(`Condition: ${condition}`)
+                                  else removeFilter(`Condition: ${condition}`)
+                                }}
+                              />
+                              <Label htmlFor={`condition-${condition}`}>{condition}</Label>
+                            </div>
+                          ),
+                        )}
                       </div>
                     </AccordionContent>
                   </AccordionItem>
 
                   <AccordionItem value="location">
-                    <AccordionTrigger className="text-sm font-medium">
-                      Location
-                    </AccordionTrigger>
+                    <AccordionTrigger className="text-sm font-medium">Location</AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-2">
-                        {[
-                          "Manhattan, NY",
-                          "Brooklyn, NY",
-                          "Queens, NY",
-                          "Bronx, NY",
-                          "Staten Island, NY",
-                        ].map((location) => (
-                          <div
-                            key={location}
-                            className="flex items-center space-x-2"
-                          >
-                            <Checkbox
-                              id={`location-${location}`}
-                              onCheckedChange={(checked) => {
-                                if (checked) addFilter(`Location: ${location}`);
-                                else removeFilter(`Location: ${location}`);
-                              }}
-                            />
-                            <Label htmlFor={`location-${location}`}>
-                              {location}
-                            </Label>
-                          </div>
-                        ))}
+                        {["Manhattan, NY", "Brooklyn, NY", "Queens, NY", "Bronx, NY", "Staten Island, NY"].map(
+                          (location) => (
+                            <div key={location} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`location-${location}`}
+                                onCheckedChange={(checked) => {
+                                  if (checked) addFilter(`Location: ${location}`)
+                                  else removeFilter(`Location: ${location}`)
+                                }}
+                              />
+                              <Label htmlFor={`location-${location}`}>{location}</Label>
+                            </div>
+                          ),
+                        )}
                       </div>
                     </AccordionContent>
                   </AccordionItem>
 
                   <AccordionItem value="category">
-                    <AccordionTrigger className="text-sm font-medium">
-                      Category
-                    </AccordionTrigger>
+                    <AccordionTrigger className="text-sm font-medium">Category</AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-2">
-                        {[
-                          "Electronics",
-                          "Fashion",
-                          "Home",
-                          "Sports",
-                          "Collectibles",
-                          "Vehicles",
-                        ].map((category) => (
-                          <div
-                            key={category}
-                            className="flex items-center space-x-2"
-                          >
+                        {["Electronics", "Fashion", "Home", "Sports", "Collectibles", "Vehicles"].map((category) => (
+                          <div key={category} className="flex items-center space-x-2">
                             <Checkbox
                               id={`category-${category}`}
                               onCheckedChange={(checked) => {
-                                if (checked) addFilter(`Category: ${category}`);
-                                else removeFilter(`Category: ${category}`);
+                                if (checked) addFilter(`Category: ${category}`)
+                                else removeFilter(`Category: ${category}`)
                               }}
                             />
-                            <Label htmlFor={`category-${category}`}>
-                              {category}
-                            </Label>
+                            <Label htmlFor={`category-${category}`}>{category}</Label>
                           </div>
                         ))}
                       </div>
@@ -296,30 +216,20 @@ export default function SearchPage() {
                   </AccordionItem>
 
                   <AccordionItem value="seller-rating">
-                    <AccordionTrigger className="text-sm font-medium">
-                      Seller Rating
-                    </AccordionTrigger>
+                    <AccordionTrigger className="text-sm font-medium">Seller Rating</AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-2">
                         {[4, 3, 2, 1].map((rating) => (
-                          <div
-                            key={rating}
-                            className="flex items-center space-x-2"
-                          >
+                          <div key={rating} className="flex items-center space-x-2">
                             <Checkbox
                               id={`rating-${rating}`}
                               onCheckedChange={(checked) => {
-                                if (checked)
-                                  addFilter(`Rating: ${rating}+ stars`);
-                                else removeFilter(`Rating: ${rating}+ stars`);
+                                if (checked) addFilter(`Rating: ${rating}+ stars`)
+                                else removeFilter(`Rating: ${rating}+ stars`)
                               }}
                             />
-                            <Label
-                              htmlFor={`rating-${rating}`}
-                              className="flex items-center"
-                            >
-                              {rating}+{" "}
-                              <Star className="h-3 w-3 ml-1 fill-yellow-400 text-yellow-400" />
+                            <Label htmlFor={`rating-${rating}`} className="flex items-center">
+                              {rating}+ <Star className="h-3 w-3 ml-1 fill-yellow-400 text-yellow-400" />
                             </Label>
                           </div>
                         ))}
@@ -329,16 +239,10 @@ export default function SearchPage() {
                 </Accordion>
 
                 <div className="flex justify-between pt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => setActiveFilters([])}
-                    className="transition-colors"
-                  >
+                  <Button variant="outline" onClick={() => setActiveFilters([])} className="transition-colors">
                     Clear All
                   </Button>
-                  <Button className="transition-transform hover:scale-105">
-                    Apply Filters
-                  </Button>
+                  <Button className="transition-transform hover:scale-105">Apply Filters</Button>
                 </div>
               </div>
             </SheetContent>
@@ -384,16 +288,9 @@ export default function SearchPage() {
       {activeFilters.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
           {activeFilters.map((filter) => (
-            <Badge
-              key={filter}
-              variant="secondary"
-              className="flex items-center gap-1 px-3 py-1"
-            >
+            <Badge key={filter} variant="secondary" className="flex items-center gap-1 px-3 py-1">
               {filter}
-              <X
-                className="h-3 w-3 ml-1 cursor-pointer"
-                onClick={() => removeFilter(filter)}
-              />
+              <X className="h-3 w-3 ml-1 cursor-pointer" onClick={() => removeFilter(filter)} />
             </Badge>
           ))}
           <Button
@@ -409,17 +306,13 @@ export default function SearchPage() {
 
       {/* Search Results */}
       <div className="mb-4">
-        <p className="text-muted-foreground">&quot;{searchQuery}&quot;</p>
+        <p className="text-muted-foreground">Showing {products.length} results for "camera"</p>
       </div>
 
       {viewMode === "grid" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product) => (
-            <Link
-              href={`/product/${product.id}`}
-              key={product.id}
-              className="group"
-            >
+            <Link href={`/product/${product.id}`} key={product.id} className="group">
               <div className="rounded-lg border overflow-hidden transition-all duration-300 hover:shadow-md hover:border-primary/50 h-full flex flex-col">
                 <div className="relative h-48 w-full bg-muted">
                   <Image
@@ -433,12 +326,8 @@ export default function SearchPage() {
                   <h3 className="font-medium line-clamp-2 group-hover:text-primary transition-colors">
                     {product.title}
                   </h3>
-                  <p className="text-lg font-bold mt-2">
-                    ${product.price.toFixed(2)}
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {product.condition}
-                  </p>
+                  <p className="text-lg font-bold mt-2">${product.price.toFixed(2)}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{product.condition}</p>
                   <div className="flex items-center mt-2 text-sm text-muted-foreground">
                     <MapPin className="h-3 w-3 mr-1" />
                     {product.location}
@@ -484,24 +373,15 @@ export default function SearchPage() {
                 <div className="p-4 flex-1">
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
                     <div>
-                      <Link
-                        href={`/product/${product.id}`}
-                        className="hover:text-primary transition-colors"
-                      >
+                      <Link href={`/product/${product.id}`} className="hover:text-primary transition-colors">
                         <h3 className="font-medium">{product.title}</h3>
                       </Link>
-                      <p className="text-lg font-bold mt-1">
-                        ${product.price.toFixed(2)}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {product.condition}
-                      </p>
+                      <p className="text-lg font-bold mt-1">${product.price.toFixed(2)}</p>
+                      <p className="text-sm text-muted-foreground">{product.condition}</p>
                     </div>
                     <div className="flex flex-col items-start sm:items-end gap-1">
                       <div className="flex items-center text-sm">
-                        <span className="font-medium mr-1">
-                          {product.seller}
-                        </span>
+                        <span className="font-medium mr-1">{product.seller}</span>
                         <div className="flex items-center">
                           <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                           <span className="ml-1">{product.rating}</span>
@@ -513,9 +393,7 @@ export default function SearchPage() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                    {product.description}
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{product.description}</p>
                   <div className="mt-4 flex justify-end">
                     <Button
                       variant="outline"
@@ -526,10 +404,7 @@ export default function SearchPage() {
                       Contact Seller
                     </Button>
                     <Link href={`/product/${product.id}`}>
-                      <Button
-                        size="sm"
-                        className="ml-2 transition-transform hover:scale-105"
-                      >
+                      <Button size="sm" className="ml-2 transition-transform hover:scale-105">
                         View Details
                       </Button>
                     </Link>
@@ -544,12 +419,7 @@ export default function SearchPage() {
       {/* Pagination */}
       <div className="flex justify-center mt-8">
         <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled
-            className="transition-colors"
-          >
+          <Button variant="outline" size="sm" disabled className="transition-colors">
             Previous
           </Button>
           <Button
@@ -583,5 +453,6 @@ export default function SearchPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
+
