@@ -1,8 +1,12 @@
+
+const { collection, doc, setDoc } = require('firebase/firestore');
 const { admin } = require('../config/firebase'); // Destructure admin
 const { db } = require('../config/firebase');
 
 
-// Add a new product
+
+const { getNextProductId } = require('../utils/productCounter');
+
 exports.addProduct = async (req, res) => {
   try {
     const {
@@ -13,56 +17,68 @@ exports.addProduct = async (req, res) => {
       location,
       tags,
       shippingOptions,
-      image,
-      category, // Add category field
+      images,
+      category,
+      specifications,
+      seller,
+      reviews
     } = req.body;
 
     // Validate input
-    if (
-      !title ||
-      !price ||
-      !condition ||
-      !description ||
-      !location ||
-      !tags ||
-      !shippingOptions ||
-      !image ||
-      !category // Validate category field
-    ) {
-      return res.status(400).json({ error: 'All fields are required' });
+    if (!title || !price || !images || !category) {
+      return res.status(400).json({ 
+        error: 'Missing required fields',
+        required: ['title', 'price', 'images', 'category']
+      });
     }
 
-    // Get the user ID from the token
-    const userId = req.user.id;
-
-    // Create a new product object
-    const product = {
+    // Create product data object
+    const productData = {
       title,
-      price: parseFloat(price), // Ensure price is a number
-      condition,
-      description,
-      location,
-      tags: Array.isArray(tags) ? tags : tags.split(','), // Convert tags to an array
-      shippingOptions: Array.isArray(shippingOptions)
-        ? shippingOptions
-        : shippingOptions.split(','), // Convert shipping options to an array
-      image,
-      category, // Include category field
-      userId, // Associate the product with the user
-      createdAt: admin.firestore.FieldValue.serverTimestamp(), // Add a timestamp
+      price: parseFloat(price),
+      condition: condition || 'New',
+      description: description || '',
+      location: location || 'Unknown',
+      tags: Array.isArray(tags) ? tags : (tags ? tags.split(',') : []),
+      shippingOptions: Array.isArray(shippingOptions) ? 
+        shippingOptions : 
+        (shippingOptions ? shippingOptions.split(',') : []),
+      images: Array.isArray(images) ? images : [images],
+      category,
+      specifications: specifications || [],
+      seller: {
+        name: seller?.name || 'Unknown Seller',
+        rating: parseFloat(seller?.rating) || 0,
+        sales: parseInt(seller?.sales) || 0,
+        joined: seller?.joined || new Date().toISOString(),
+        responseTime: seller?.responseTime || '',
+        avatar: seller?.avatar || ''
+      },
+      reviews: reviews || [],
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
     };
 
-    // Add the product to Firestore
-    const docRef = await db.collection('products').add(product);
+    // Add to Firestore using Admin SDK
+    const productRef = await db.collection('products').add(productData);
 
-    // Return the product ID and data
-    res.status(201).json({ id: docRef.id, ...product });
+    // Return response with the generated ID
+    res.status(201).json({
+      id: productRef.id,
+      ...productData,
+      // Replace server timestamps with current date for response
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+
   } catch (error) {
     console.error('Error adding product:', error);
-    res.status(500).json({ error: 'Failed to add product' });
+    res.status(500).json({ 
+      error: 'Failed to add product',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
-
 // Get all products
 exports.getAllProducts = async (req, res) => {
   try {
