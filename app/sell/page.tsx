@@ -678,7 +678,7 @@ import {
   X,
   Info,
   MapPin,
-  Truck,
+  // Truck,
   DollarSign,
   Tag,
 } from "lucide-react";
@@ -695,7 +695,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -710,12 +710,12 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db, storage } from "../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
-import { useAuth } from "../authContext";
+// import { useAuth } from "../authContext";
 import { getAuth } from "firebase/auth";
 
 export default function SellPage() {
   const router = useRouter();
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [title, setTitle] = useState("");
@@ -725,7 +725,7 @@ export default function SellPage() {
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [currentTag, setCurrentTag] = useState("");
-  const [location, setLocation] = useState("");
+  // const [location, setLocation] = useState("");
   const [shippingOption, setShippingOption] = useState("both");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
@@ -737,7 +737,7 @@ export default function SellPage() {
       setImages([...images, ...files]);
 
       // Create previews for the new images
-      const newPreviews = files.map(file => URL.createObjectURL(file));
+      const newPreviews = files.map((file) => URL.createObjectURL(file));
       setImagePreviews([...imagePreviews, ...newPreviews]);
     }
   };
@@ -812,7 +812,7 @@ export default function SellPage() {
   //     };
 
   //     const docRef = await addDoc(collection(db, "products"), productData);
-      
+
   //     // Redirect to the new product page or seller dashboard
   //     router.push(`/product/${docRef.id}`);
   //   } catch (err) {
@@ -827,18 +827,18 @@ export default function SellPage() {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
-  
+
     const auth = getAuth();
     const currentUser = auth.currentUser;
-  
+
     try {
       if (!currentUser) {
         throw new Error("You must be logged in to create a listing");
       }
-  
+
       console.log("User UID:", currentUser.uid);
       console.log("User email:", currentUser.email);
-  
+
       // Upload images
       const imageUrls = await Promise.all(
         images.map(async (image) => {
@@ -847,7 +847,7 @@ export default function SellPage() {
           return await getDownloadURL(storageRef);
         })
       );
-  
+
       // Create product data
       const productData = {
         title,
@@ -869,15 +869,14 @@ export default function SellPage() {
         status: "active",
         keywords: [
           title.toLowerCase(),
-          ...tags.map(tag => tag.toLowerCase()),
+          ...tags.map((tag) => tag.toLowerCase()),
           category.toLowerCase(),
-          condition.toLowerCase().replace("-", " ")
-        ]
+          condition.toLowerCase().replace("-", " "),
+        ],
       };
-  
+
       const docRef = await addDoc(collection(db, "products"), productData);
       router.push(`/product/${docRef.id}`);
-  
     } catch (err) {
       console.error("Error creating listing:", err);
       setError(err instanceof Error ? err.message : "Failed to create listing");
@@ -948,12 +947,12 @@ export default function SellPage() {
             <form onSubmit={handleSubmit}>
               {/* Product Details Tab */}
               <TabsContent value="details" className="space-y-6">
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                   <div className="space-y-2 md:col-span-2">
-                     <Label htmlFor="title">
-                       Product Title <span className="text-destructive">*</span>
-                     </Label>
-                     <Input
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="title">
+                      Product Title <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
                       id="title"
                       placeholder="Enter a descriptive title"
                       value={title}

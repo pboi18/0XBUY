@@ -610,7 +610,6 @@
 //   );
 // }
 
-
 // import { useState, useEffect } from "react";
 // import { useParams } from "next/navigation";
 // import { doc, getDoc } from "firebase/firestore";
@@ -626,7 +625,6 @@
 // import { ThemeToggle } from "../../components/theme-toggle";
 // import Link from "next/link";
 // import Image from "next/image";
-
 
 // import { doc, getDoc } from "firebase/firestore";
 // import { db } from "../../firebase";
@@ -656,7 +654,6 @@
 //   createdAt: Timestamp;  // Changed from Date to Timestamp
 //   updatedAt?: Timestamp; // Changed from Date to Timestamp
 // }
-
 
 // export default function ProductPage() {
 //   const params = useParams();
@@ -709,8 +706,6 @@
 //         }
 
 //         console.log("Fetching product with ID:", id); // Debug log
-
-        
 
 //         if (!docSnap.exists()) {
 //           setError("Product not found");
@@ -994,10 +989,10 @@ export default function ProductPage() {
     const fetchProduct = async () => {
       try {
         if (!id) return;
-        
+
         const docRef = doc(db, "products", id as string);
         const docSnap = await getDoc(docRef);
-        
+
         if (docSnap.exists()) {
           setProduct({
             id: docSnap.id,
@@ -1043,7 +1038,7 @@ export default function ProductPage() {
     return (
       <div className="container py-8 flex flex-col justify-center items-center h-screen">
         <div className="text-xl text-destructive mb-4">{error}</div>
-        <Link  href="/" className="text-primary hover:underline">
+        <Link href="/" className="text-primary hover:underline">
           Back home
         </Link>
       </div>
@@ -1054,7 +1049,7 @@ export default function ProductPage() {
     return (
       <div className="container py-8 flex flex-col justify-center items-center h-screen">
         <div className="text-xl mb-4">Product not found</div>
-        <Link  href="/" className="text-primary hover:underline">
+        <Link href="/" className="text-primary hover:underline">
           Back home
         </Link>
       </div>
@@ -1560,18 +1555,25 @@ export default function ProductPage() {
   );
 }
 
-// Helper function to format Firestore timestamp
-function formatDate(timestamp: any) {
+import { Timestamp } from "firebase/firestore";
+
+function formatDate(timestamp: Timestamp | Date | string | null): string {
   if (!timestamp) return "Unknown date";
-  
+
   try {
-    const date = timestamp.toDate();
+    const date =
+      timestamp instanceof Timestamp
+        ? timestamp.toDate()
+        : timestamp instanceof Date
+        ? timestamp
+        : new Date(timestamp);
+
     return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
     });
-  } catch (error) {
-    return timestamp; // Return as-is if it's already a string
+  } catch {
+    return typeof timestamp === "string" ? timestamp : "Invalid date";
   }
 }
