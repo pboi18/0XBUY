@@ -246,6 +246,13 @@ export default function LandingPage() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
+            {/* Search Icon */}
+            <Link
+              href="/search"
+              className="text-muted-foreground hover:text-primary"
+            >
+              <Search className="h-5 w-5" />
+            </Link>
             <ThemeToggle />
             {userAddress ? (
               <div className="flex items-center gap-2">
