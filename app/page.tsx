@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import {
   Search,
@@ -15,36 +16,28 @@ import {
   BarChart3,
   Map,
   Crown,
-  LogOut,
+  // LogOut,
   Facebook,
   Twitter,
   Instagram,
   Linkedin,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useAbstraxionAccount } from "@burnt-labs/abstraxion";
 import { Button } from "@/components/ui/button";
 import { collection, query, where, getDocs, limit } from "firebase/firestore";
-import { signOut } from "firebase/auth";
 import { db } from "./firebase";
 import Link from "next/link";
 import Image from "next/image";
-import { auth, provider, signInWithPopup } from "../app/firebase";
-// import TestimonialCarousel from "./components/testimonial-carousel";
-import { ThemeToggle } from "./components/theme-toggle";
-// import { FaGoogle, FaSignOutAlt } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { ThemeToggle } from "./components/theme-toggle";
+import MetaAccountPage from "./components/MetaAccountPage"; // Import MetaAccountPage
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"; // Add DialogTitle
 
-type User = {
-  email: string;
-  key: string;
-};
+// type User = {
+//   email: string;
+//   key: string;
+// };
 
 type Suggestion = {
   id: string;
@@ -58,42 +51,53 @@ type Product = {
   price: number;
   images?: string[];
 };
-
 export default function LandingPage() {
+  const [showMetaAccountModal, setShowMetaAccountModal] = useState(false); // State for MetaAccount modal
+  const [userAddress, setUserAddress] = useState<string | null>(null); // State for Meta Account address
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [setSearchResults] = useState<Product[]>([]);
+  // const [setSearchResults] = useState<Product[]>([]);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [setShowSearchResults] = useState<boolean>(false);
-  const [user, setUser] = useState<User | null>(null);
+  // const [setShowSearchResults] = useState<boolean>(false);
+  // const [user, setUser] = useState<User | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  // const [showAuthDialog, setShowAuthDialog] = useState(false);
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      // @ts-expect-error: 'user' might be null or undefined, but we handle it appropriately
-      setUser(user);
-    });
-    return () => unsubscribe();
-  }, []);
+  const handleSignIn = () => {
+    setShowMetaAccountModal(true); // Show the MetaAccount modal
+  };
+  // const handleMetaAccountSubmit = (address: string) => {
+  //   setUserAddress(address); // Update user address
+  //   setShowMetaAccountModal(false); // Hide the MetaAccount modal
+  // };
+
+  // useEffect(() => {
+  //   const unsubscribe = auth.onAuthStateChanged((user) => {
+  //     // @ts-expect-error: 'user' might be null or undefined, but we handle it appropriately
+  //     setUser(user);
+  //   });
+  //   return () => unsubscribe();
+  // }, []);
 
   const [, setIsReady] = useState(false);
-  const router = useRouter();
+  // const router = useRouter();
 
   useEffect(() => {
     setIsReady(true);
   }, []);
+  const {
+    data: { bech32Address },
+    isConnected,
+  } = useAbstraxionAccount();
 
-  const handleSellNowClick = () => {
-    if (user) {
-      router.push("/sell");
-    } else {
-      setShowAuthDialog(true);
+  useEffect(() => {
+    if (isConnected && bech32Address) {
+      setUserAddress(bech32Address); // Update the state when the user connects
     }
-  };
-
+  }, [isConnected, bech32Address]);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -146,7 +150,6 @@ export default function LandingPage() {
         setIsSearching(false);
       }
     };
-
     const timerId = setTimeout(() => {
       fetchSuggestions();
     }, 300);
@@ -189,8 +192,7 @@ export default function LandingPage() {
       setIsSearching(false);
       setShowSuggestions(false);
     }
-  };
-  // @ts-expect-error: 'user' might be null or undefined, but we handle it appropriately
+  }; // @ts-expect-error: 'user' might be null or undefined, but we handle it appropriately
   const handleSubmit = (e) => {
     e.preventDefault();
     handleSearch();
@@ -201,40 +203,11 @@ export default function LandingPage() {
     handleSearch(suggestion.name);
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const currentUser = result.user;
-      const idToken = await currentUser.getIdToken();
-      console.log("Firebase ID Token:", idToken);
-      console.log("User signed in:", currentUser);
-    } catch (error) {
-      console.error("Error signing in with Google:", (error as Error).message);
-    }
-  };
-
-  const handleGoogleSellSignIn = async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const currentUser = result.user;
-      const idToken = await currentUser.getIdToken();
-      console.log("Firebase ID Token:", idToken);
-      console.log("User signed in:", currentUser);
-      setShowAuthDialog(false); // Close dialog on success
-      router.push("/sell");
-      // Only use router if component is mounted
-    } catch (error) {
-      // @ts-expect-error: 'user' might be null or undefined, but we handle it appropriately
-      console.error("Error signing in with Google:", error.message);
-    }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      console.log("User signed out");
-    } catch (error) {
-      console.error("Error signing out:", (error as Error).message);
+  const handleSellNowClick = () => {
+    if (userAddress) {
+      router.push("/sell"); // Redirect to sell page if logged in
+    } else {
+      setShowMetaAccountModal(true); // Show the MetaAccount modal
     }
   };
 
@@ -274,25 +247,33 @@ export default function LandingPage() {
           </nav>
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            {user ? (
+            {userAddress ? (
               <div className="flex items-center gap-2">
-                <span className="text-sm">{`${user.email.substring(
-                  0,
-                  4
-                )}***${user.email.substring(user.email.indexOf("@"))}`}</span>
-                <Button
+                <Link href="/profile">
+                  <div className="relative group cursor-pointer">
+                    {/* Profile Circle */}
+                    <div className="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center transition-transform duration-300 group-hover:translate-x-[-60px]">
+                      {userAddress.substring(0, 1).toUpperCase()}
+                    </div>
+                    {/* User Address Tooltip */}
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-sm font-medium text-primary bg-white px-2 py-1 rounded shadow-lg">
+                      {userAddress.substring(0, 6)}...
+                    </span>
+                  </div>
+                </Link>
+                {/* <Button
                   size="sm"
                   className="transition-transform hover:scale-105"
-                  onClick={handleSignOut}
+                  onClick={() => setUserAddress(null)} // Log out
                 >
                   <LogOut className="h-5 w-5" />
-                </Button>
+                </Button> */}
               </div>
             ) : (
               <Button
                 size="sm"
                 className="transition-transform hover:scale-105"
-                onClick={handleGoogleSignIn}
+                onClick={handleSignIn}
               >
                 Sign In
               </Button>
@@ -316,11 +297,11 @@ export default function LandingPage() {
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  {!user && (
+                  {!userAddress && (
                     <Button
                       size="lg"
                       className="gap-1 animate-pulse-subtle transition-transform hover:scale-105"
-                      onClick={handleGoogleSignIn}
+                      onClick={handleSignIn}
                     >
                       Get Started <ChevronRight className="h-4 w-4" />
                     </Button>
@@ -334,77 +315,8 @@ export default function LandingPage() {
                   >
                     Sell Now
                   </Button>
-
-                  <Dialog
-                    open={showAuthDialog}
-                    onOpenChange={setShowAuthDialog}
-                  >
-                    <DialogContent className="sm:max-w-[425px] rounded-lg">
-                      <DialogHeader>
-                        <div className="flex justify-center mb-4">
-                          <ShoppingBag className="h-12 w-12 text-primary" />
-                        </div>
-                        <DialogTitle className="text-center text-2xl font-bold">
-                          Join Our Marketplace
-                        </DialogTitle>
-                        <DialogDescription className="text-center mt-2">
-                          Sign in to start selling your products to thousands of
-                          buyers
-                        </DialogDescription>
-                      </DialogHeader>
-
-                      <div className="grid gap-4 py-4">
-                        <div className="space-y-2 text-center">
-                          <p className="text-sm text-muted-foreground">
-                            We just need a quick sign in to protect our
-                            community
-                          </p>
-                        </div>
-
-                        <Button
-                          onClick={handleGoogleSellSignIn}
-                          className="w-full py-6 bg-white text-gray-800 border border-gray-300 hover:bg-gray-50 transition-all"
-                        >
-                          <div className="flex items-center justify-center gap-3">
-                            <svg
-                              viewBox="0 0 24 24"
-                              className="h-5 w-5"
-                              aria-hidden="true"
-                            >
-                              <path
-                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                                fill="#4285F4"
-                              />
-                              <path
-                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                                fill="#34A853"
-                              />
-                              <path
-                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                                fill="#FBBC05"
-                              />
-                              <path
-                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                                fill="#EA4335"
-                              />
-                              <path d="M1 1h22v22H1z" fill="none" />
-                            </svg>
-                            <span className="text-base font-medium">
-                              Continue with Google
-                            </span>
-                          </div>
-                        </Button>
-
-                        <p className="text-xs text-center text-muted-foreground px-4">
-                          By continuing, you agree to our Terms of Service and
-                          Privacy Policy
-                        </p>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
                 </div>
               </div>
-
               <div
                 className="flex items-center justify-center animate-fade-in"
                 style={{ animationDelay: "0.2s" }}
@@ -493,7 +405,6 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-
         <section id="categories" className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -651,10 +562,11 @@ export default function LandingPage() {
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                {!user && (
+                {!userAddress && (
                   <Button
                     size="lg"
                     className="gap-1 animate-pulse-subtle transition-transform hover:scale-105"
+                    onClick={handleSignIn}
                   >
                     Sign Up Now <ChevronRight className="h-4 w-4" />
                   </Button>
@@ -663,9 +575,7 @@ export default function LandingPage() {
                   size="lg"
                   variant="outline"
                   className="transition-transform hover:scale-105"
-                  onClick={() =>
-                    user ? router.push("/sell") : setShowAuthDialog(true)
-                  }
+                  onClick={handleSellNowClick}
                 >
                   Sell Now
                 </Button>
@@ -674,7 +584,6 @@ export default function LandingPage() {
           </div>
         </section>
       </main>
-
       <footer className="w-full border-t bg-background py-6 md:py-12">
         <div className="container px-4 md:px-6">
           <div
@@ -814,6 +723,23 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* MetaAccount Modal */}
+      <Dialog
+        open={showMetaAccountModal}
+        onOpenChange={setShowMetaAccountModal}
+      >
+        <DialogContent className="sm:max-w-[425px] max-h-[70vh] rounded-lg">
+          <DialogTitle>Meta Account Login</DialogTitle> {/* Add DialogTitle */}
+          <MetaAccountPage
+            onClose={() => setShowMetaAccountModal(false)} // Close modal
+            onLogin={(address: string) => {
+              setUserAddress(address); // Set user address after login
+              setShowMetaAccountModal(false); // Close modal
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

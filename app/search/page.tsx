@@ -591,6 +591,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation"; // Import useRouter
+import { ArrowLeft } from "lucide-react";
 import {
   Search,
   Filter,
@@ -639,7 +641,7 @@ import { Product } from "../../app/product/types";
 export default function SearchPage() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q") || "";
-  
+  const router = useRouter(); // Initialize the router
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -652,10 +654,10 @@ export default function SearchPage() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        
+
         // Base query for search
         let q = query(collection(db, "products"));
-        
+
         // Add search query if exists
         if (searchQuery) {
           q = query(
@@ -663,17 +665,17 @@ export default function SearchPage() {
             where("keywords", "array-contains", searchQuery.toLowerCase())
           );
         }
-        
+
         const querySnapshot = await getDocs(q);
         const productsData: Product[] = [];
-        
+
         querySnapshot.forEach((doc) => {
           productsData.push({
             id: doc.id,
             ...doc.data(),
           } as Product);
         });
-        
+
         setProducts(productsData);
       } catch (err) {
         setError("Failed to fetch products");
@@ -717,6 +719,15 @@ export default function SearchPage() {
 
   return (
     <div className="container py-8 animate-fade-in">
+      <div className="mb-6">
+        <button
+          onClick={() => router.push("/")} // Navigate to the home page
+          className="flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Home
+        </button>
+      </div>
       {/* Search Header */}
       <div className="flex flex-col md:flex-row gap-4 items-center mb-8">
         <div className="relative flex-1 w-full">
@@ -988,7 +999,8 @@ export default function SearchPage() {
       {/* Search Results */}
       <div className="mb-4">
         <p className="text-muted-foreground">
-          Showing {products.length} results {searchQuery && `for "${searchQuery}"`}
+          Showing {products.length} results{" "}
+          {searchQuery && `for "${searchQuery}"`}
         </p>
       </div>
 
@@ -1035,7 +1047,9 @@ export default function SearchPage() {
                     {product.location}
                   </div>
                   <div className="flex items-center mt-1 text-sm">
-                    <span className="font-medium mr-1">{product.seller.name}</span>
+                    <span className="font-medium mr-1">
+                      {product.seller.name}
+                    </span>
                     <div className="flex items-center">
                       <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                       <span className="ml-1">{product.seller.rating}</span>
