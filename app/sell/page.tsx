@@ -228,55 +228,55 @@ export default function SellPage() {
     }
   };
 
-  const handleIncrement = async () => {
-    try {
-      if (!isConnected) {
-        throw new Error("Wallet is not connected. Please connect your wallet.");
-      }
+  // const handleIncrement = async () => {
+  //   try {
+  //     if (!isConnected) {
+  //       throw new Error("Wallet is not connected. Please connect your wallet.");
+  //     }
 
-      console.log("Sender Address (bech32Address):", bech32Address);
-      if (!bech32Address || typeof bech32Address !== "string") {
-        throw new Error(
-          "Invalid wallet address. Please reconnect your wallet."
-        );
-      }
+  //     console.log("Sender Address (bech32Address):", bech32Address);
+  //     if (!bech32Address || typeof bech32Address !== "string") {
+  //       throw new Error(
+  //         "Invalid wallet address. Please reconnect your wallet."
+  //       );
+  //     }
 
-      if (!client) {
-        throw new Error("Abstraxion client is not initialized");
-      }
+  //     if (!client) {
+  //       throw new Error("Abstraxion client is not initialized");
+  //     }
 
-      const contractAddress =
-        "xion1nm46zu32efulppmfjl0yc684l5u9y97nzdxqc2k7t20pyh2mg34qztnuv0";
-      console.log("Contract Address:", contractAddress);
+  //     const contractAddress =
+  //       "xion1nm46zu32efulppmfjl0yc684l5u9y97nzdxqc2k7t20pyh2mg34qztnuv0";
+  //     console.log("Contract Address:", contractAddress);
 
-      const msg = {
-        increment: {}, // Message for the Increment action
-      };
+  //     const msg = {
+  //       increment: {}, // Message for the Increment action
+  //     };
 
-      const fee: StdFee = {
-        amount: [{ denom: "uxion", amount: "200" }], // Adjust fee as needed
-        gas: "200000",
-      };
+  //     const fee: StdFee = {
+  //       amount: [{ denom: "uxion", amount: "200" }], // Adjust fee as needed
+  //       gas: "200000",
+  //     };
 
-      console.log("Sending increment transaction...");
-      const transaction = await client.execute(
-        bech32Address,
-        contractAddress,
-        msg,
-        fee
-      );
-      console.log("Transaction sent. Waiting for confirmation...");
+  //     console.log("Sending increment transaction...");
+  //     const transaction = await client.execute(
+  //       bech32Address,
+  //       contractAddress,
+  //       msg,
+  //       fee
+  //     );
+  //     console.log("Transaction sent. Waiting for confirmation...");
 
-      const transactionHash = transaction.transactionHash;
-      console.log("Transaction confirmed:", transactionHash);
-      alert("Count incremented successfully!");
-    } catch (err) {
-      console.error("Error incrementing count:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to increment count"
-      );
-    }
-  };
+  //     const transactionHash = transaction.transactionHash;
+  //     console.log("Transaction confirmed:", transactionHash);
+  //     alert("Count incremented successfully!");
+  //   } catch (err) {
+  //     console.error("Error incrementing count:", err);
+  //     setError(
+  //       err instanceof Error ? err.message : "Failed to increment count"
+  //     );
+  //   }
+  // };
 
   const isFormValid =
     title && price && category && condition && description && images.length > 0;
@@ -339,12 +339,12 @@ export default function SellPage() {
             {/* <Button disabled={loading}  onClick={getCount} structure="base">
             {loading ? "LOADING..." : "Get Count"}
           </Button> */}
-            <Button
+            {/* <Button
               onClick={handleIncrement}
               className="mt-4 transition-transform hover:scale-105"
             >
               Increment Count
-            </Button>
+            </Button> */}
 
             <form onSubmit={handleSubmit}>
               {/* Product Details Tab */}
